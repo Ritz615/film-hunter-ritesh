@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { SearchIcon } from "lucide-react";
@@ -8,17 +8,20 @@ import { Menubar } from "@radix-ui/react-menubar";
 import { MenubarContent, MenubarItem, MenubarShortcut } from "./ui/menubar";
 import Image from "next/image";
 import img from "@/assets/img/dummy_img.jpg";
+import Link from "next/link";
 
 const AppBar: React.FC<{ onSearch: (query: string) => void }> = ({
   onSearch,
 }) => {
+  const [searchMovie, setSearchMovie] = useState<any[]>([]);
+
   const handleSearch = async (query: string) => {
     try {
-      const response = await fetch(`/api/search?q=${query}`, {
-        method: "GET",
-      });
-      const result = await response.json();
-      console.log(result);
+      // const response = await fetch(`/api/search?q=${query}`, {
+      //   method: "GET",
+      // });
+      // const result = await response.json();
+      // console.log(result);
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +30,9 @@ const AppBar: React.FC<{ onSearch: (query: string) => void }> = ({
   return (
     <div className="border-b w-full h-16 grid grid-cols-12 items-center">
       <div className="col-span-3 text-center">
-        <h3 className="text-2xl font-extrabold  uppercase">Film Hunter</h3>
+        <Link href="/">
+          <h3 className="text-2xl font-extrabold uppercase">Film Hunter</h3>
+        </Link>
       </div>
 
       <div className="relative ml-auto flex-1 md:grow-0 col-span-6 w-full">
@@ -42,7 +47,7 @@ const AppBar: React.FC<{ onSearch: (query: string) => void }> = ({
           }}
         />
 
-        <div className="auto-complete hidden flex flex-col absolute w-full bg-white z-10 border my-1 rounded">
+        <div className="auto-complete flex flex-col absolute w-full bg-black z-10 border my-1 rounded">
           {[1, 2, 3, 4, 5].map((item) => (
             <div
               key={item}
