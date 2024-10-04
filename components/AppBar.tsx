@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { SearchIcon } from "lucide-react";
@@ -9,19 +9,29 @@ import { MenubarContent, MenubarItem, MenubarShortcut } from "./ui/menubar";
 import Image from "next/image";
 import img from "@/assets/img/dummy_img.jpg";
 import Link from "next/link";
+import { searchMovies } from "@/lib/utils";
+import { FAKE_DATA_DB } from "@/lib/db";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const AppBar: React.FC<{ onSearch: (query: string) => void }> = ({
   onSearch,
 }) => {
-  const [searchMovie, setSearchMovie] = useState<any[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = async (query: string) => {
+  useEffect(() => {
+    if (searchParams.get("q")?.trim() !== "") {
+      setSearchQuery(searchParams.get("q") || "");
+    }
+  }, [searchParams]);
+
+  const handleSearch = async (e: any) => {
+    setSearchQuery(e.target.value);
     try {
-      // const response = await fetch(`/api/search?q=${query}`, {
-      //   method: "GET",
-      // });
-      // const result = await response.json();
-      // console.log(result);
+      if (e.code == "Enter") {
+        router.push("/search?q=" + e.currentTarget.value);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -41,35 +51,13 @@ const AppBar: React.FC<{ onSearch: (query: string) => void }> = ({
           type="search"
           placeholder="Search..."
           className="w-full rounded-lg bg-background pl-8"
-          onChange={(e) => {
-            handleSearch(e.target.value);
-            onSearch(e.target.value);
+          onKeyDown={(e) => {
+            handleSearch(e);
+            onSearch(e.currentTarget.value);
           }}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchQuery}
         />
-
-        <div className="auto-complete flex flex-col absolute w-full bg-black z-10 border my-1 rounded">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <div
-              key={item}
-              className="item flex flex-row gap-x-5 border-b last:border-none items-center p-1"
-            >
-              <div className="image">
-                <Image
-                  src={img}
-                  width={40}
-                  height={40}
-                  alt="Image"
-                  className="aspect-square object-cover rounded-sm"
-                />
-              </div>
-              <div className="title">
-                <p className="text-base">
-                  Harry Potter: The Half-Blood Prince.
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

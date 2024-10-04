@@ -3,6 +3,8 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Main from "@/components/Main";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,14 +21,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className} antialiased h-full`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Main>{children}</Main>
-        </ThemeProvider>
+        <PageTransition>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Main>{children}</Main>
+
+            <Footer />
+          </ThemeProvider>
+        </PageTransition>
       </body>
     </html>
   );
